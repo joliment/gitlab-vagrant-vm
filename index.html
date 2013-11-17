@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Gitlab-vagrant-vm by joliment</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Gitlab-vagrant-vm</h1>
+          <h2>Vagrant VM for GITLAB Developer. </h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/joliment/gitlab-vagrant-vm/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/joliment/gitlab-vagrant-vm/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/joliment/gitlab-vagrant-vm" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a name="gitlab-vagrant-vm" class="anchor" href="#gitlab-vagrant-vm"><span class="octicon octicon-link"></span></a>Gitlab-Vagrant-VM</h1>
+
+<h2>
+<a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>Description</h2>
+
+<p>Setup a dev environment for Gitlab.</p>
+
+<p>The final product contain all databases set up, working tests and all gems
+installed.</p>
+
+<h2>
+<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
+
+<ul>
+<li><a href="https://www.virtualbox.org">VirtualBox</a></li>
+<li><a href="http://vagrantup.com">Vagrant 1.2.x</a></li>
+<li>
+<p>the NFS packages. Already there if you are using Mac OS, and
+not necessary if you are using Windows. On Linux:</p>
+
+<div class="highlight highlight-bash"><pre>  <span class="nv">$ </span>sudo apt-get install nfs-kernel-server nfs-common portmap
+</pre></div>
+
+<p>On OS X you can also choose to use <a href="http://www.vagrantup.com/vmware">the (commercial) Vagrant VMware Fusion plugin</a> instead of VirtualBox.</p>
+</li>
+<li><p>some patience :)</p></li>
+</ul><p><strong>Note:</strong> Make sure to use Vagrant v1.2.x. Do not install via rubygems.org as there exists an old gem
+which will probably cause errors. Instead, grab the latest version from <a href="http://downloads.vagrantup.com/">http://downloads.vagrantup.com/</a>.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Clone the repository:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>git clone https://github.com/gitlabhq/gitlab-vagrant-vm
+<span class="nv">$ </span><span class="nb">cd </span>gitlab-vagrant-vm
+</pre></div>
+
+<p>And install gems and chef's necessary packages:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>bundle install
+<span class="nv">$ </span>bundle <span class="nb">exec </span>librarian-chef install
+</pre></div>
+
+<p>Finally, you should be able to use:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant up
+</pre></div>
+
+<p>By default the VM uses 1GB of memory and 1 CPU core. If you want to use more memory or cores you can use the GITLAB_VAGRANT_MEMORY and GITLAB_VAGRANT_CORES environment variables:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">GITLAB_VAGRANT_MEMORY</span><span class="o">=</span>1536 <span class="nv">GITLAB_VAGRANT_CORES</span><span class="o">=</span>2 vagrant up
+</pre></div>
+
+<p><strong>Note:</strong>
+You can't use a vagrant project on an encrypted partition (ie. it won't work if your home directory is encrypted).</p>
+
+<p>You'll be asked for your password to set up NFS shares.</p>
+
+<p>Once everything is done you can log into the virtual machine to run tests:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant ssh
+<span class="nv">$ </span><span class="nb">cd</span> /vagrant/gitlabhq/
+<span class="nv">$ </span>bundle <span class="nb">exec </span>rake gitlab:test
+</pre></div>
+
+<p>Start the Gitlab app:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>foreman start
+</pre></div>
+
+<p>You should also configure your own remote since by default it's going to grab
+gitlab's master branch.</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>git remote add mine git://github.com/me/gitlabhq.git
+<span class="nv">$ </span><span class="c"># or if you prefer set up your origin as your own repository</span>
+<span class="nv">$ </span>git remote <span class="nb">set</span>-url origin git://github.com/me/gitlabhq.git
+</pre></div>
+
+<h2>
+<a name="openldap" class="anchor" href="#openldap"><span class="octicon octicon-link"></span></a>OpenLdap</h2>
+
+<p>If you need to setup OpenLDAP in order to test the functionality you can use the <a href="OpenLDAP.md">basic OpenLDAP setup guide</a></p>
+
+<h2>
+<a name="virtual-machine-management" class="anchor" href="#virtual-machine-management"><span class="octicon octicon-link"></span></a>Virtual Machine Management</h2>
+
+<p>When done just log out with <code>^D</code> and suspend the virtual machine</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant <span class="nb">suspend</span>
+</pre></div>
+
+<p>then, resume to hack again</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant resume
+</pre></div>
+
+<p>Run</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant halt
+</pre></div>
+
+<p>to shutdown the virtual machine, and</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant up
+</pre></div>
+
+<p>to boot it again.</p>
+
+<p>You can find out the state of a virtual machine anytime by invoking</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant status
+</pre></div>
+
+<p>Finally, to completely wipe the virtual machine from the disk <strong>destroying all its contents</strong>:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant destroy <span class="c"># DANGER: all is gone</span>
+</pre></div>
+
+<h2>
+<a name="information" class="anchor" href="#information"><span class="octicon octicon-link"></span></a>Information</h2>
+
+<ul>
+<li>Virtual Machine IP: 192.168.3.14</li>
+<li>Virtual Machine user/password: vagrant/vagrant</li>
+<li>GitLab webapp running at: <a href="http://192.168.3.14:3000/">http://192.168.3.14:3000/</a>
+</li>
+<li>GitLab webapp user/password: <a href="mailto:admin@local.host">admin@local.host</a>/5iveL!fe</li>
+<li>MySQL user/password: vagrant/Vagrant</li>
+<li>MySQL root password: nonrandompasswordsaregreattoo</li>
+<li>Xvfb is used as a service and it should be already running, but in case you
+need to restart it manually:</li>
+</ul><div class="highlight highlight-bash"><pre><span class="nv">$ </span>sudo /etc/init.d/xvfb stop
+<span class="nv">$ </span>sudo /etc/init.d/xvfb start
+</pre></div>
+
+<ul>
+<li>Install another Ruby: <code>rbenv install 1.9.3-p448</code>
+</li>
+<li>Switch to a different Ruby: <code>rbenv global 1.9.3-p448</code>
+</li>
+</ul><h2>
+<a name="updating" class="anchor" href="#updating"><span class="octicon octicon-link"></span></a>Updating</h2>
+
+<p>The gitlabhq version is <em>not</em> updated when you rebuild your virtual machine with the following command:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>vagrant destroy <span class="o">&amp;&amp;</span> vagrant up
+</pre></div>
+
+<p>You must update it yourself by going to the gitlabhq subdirectory in the gitlab-vagrant-vm repo and pulling the latest changes:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span><span class="nb">cd </span>gitlabhq <span class="o">&amp;&amp;</span> git pull --ff origin master
+</pre></div>
+
+<p>A bit of background on why this is needed. When you run 'vagrant up' there is a <a href="https://github.com/gitlabhq/gitlab-vagrant-vm/blob/master/site-cookbooks/gitlab/recipes/vagrant.rb#L54">checkout action in the recipe</a> that <a href="https://github.com/gitlabhq/gitlab-vagrant-vm/blob/master/site-cookbooks/gitlab/attributes/vagrant.rb#L10">points to</a> the <a href="https://github.com/gitlabhq/gitlabhq">gitlabhq repo</a>. You won't see any difference when running 'git status' in the gitlab-vagrant-vm repo because gitlabhq/ is in the <a href="https://github.com/gitlabhq/gitlab-vagrant-vm/blob/master/.gitignore">.gitignore</a>. You can update the gitlabhq repo yourself or remove the gitlabhq directory so the repo is checked out again.</p>
+        </section>
+
+        <footer>
+          Gitlab-vagrant-vm is maintained by <a href="https://github.com/joliment">joliment</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
